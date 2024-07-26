@@ -184,6 +184,11 @@ class Commande
         return $this->adresseLivraison;
     }
 
+    public function getClient()
+    {
+        return $this->client;
+    }
+
     public function setId($id)
     {
         $this->id = $id;
@@ -214,16 +219,21 @@ class Commande
         $this->adresseLivraison = $adresseLivraison;
     }
 
+    public function setClient($client)
+    {
+        $this->client = $client;
+    }
+
     public function save()
     {
         $dba = new Dbaccess();
-        $dba->query("insert into commande values('" . $this->id . "',
+        $dba->query("insert into commande (date, statut, remarques, montant, adresse_livraison, id_client) values (
                                                 '" . $this->date . "',
-                                                "  . $this->statut . ",
-                                                "  . $this->remarques . ",
+                                                '"  . $this->statut . "',
+                                                '"  . $this->remarques . "',
                                                 "  . $this->montant . ",
-                                                "  . $this->adresseLivraison . ",
-                                                '"  . $this->client . "')");
+                                                '"  . $this->adresseLivraison . "',
+                                                "  . $this->client . ")");
         $dba->execute();
         return 0;
     }
@@ -240,11 +250,12 @@ class Commande
     {
         $dba = new Dbaccess();
         $dba->query("update commande set date = '" . $this->date . "',
-                                        status = "  . $this->statut . ",
-                                        remarques = "  . $this->remarques . ",
+                                        statut = '"  . $this->statut . "',
+                                        remarques = '"  . $this->remarques . "',
                                         montant = "  . $this->montant . ",
-                                        adresse_livraison = "  . $this->adresseLivraison . "
-                                        where id = '"  . $this->id . "'");
+                                        adresse_livraison = '"  . $this->adresseLivraison . "',
+                                        id_client = "  . $this->client . "
+                                        where id = "  . $this->id . "");
         $dba->execute();
         return 0;
     }
@@ -252,21 +263,21 @@ class Commande
     public function getAll()
     {
         $dba = new Dbaccess();
-        $dba->query("Select * from commande inner join client on (client.id = commande.id_client)");
+        $dba->query("Select *, d.id as id_commande from commande d inner join client on (client.id = d.id_client)");
         return $dba->resultSet();
     }
 
     public function getOne()
     {
         $dba = new Dbaccess();
-        $dba->query("Select * from commande inner join client on (client.id = commande.id_client) where id='" . $this->id . "'");
+        $dba->query("Select * from commande inner join client on (client.id = commande.id_client) where commande.id='" . $this->id . "'");
         return $dba->single();
     }
 
     public function getByDate($date)
     {
         $dba = new Dbaccess();
-        $dba->query("Select * from commande inner join client on (client.id = commande.id_client) where date = '%" . $date . "%'");
+        $dba->query("Select *, d.id as id_commande from commande d inner join client on (client.id = d.id_client) where date = '" . $date . "'");
         return $dba->resultSet();
     }
 
@@ -286,6 +297,7 @@ class Facture
     private $statut;
     private $montantTotal;
     private $moyenPaiement;
+    private $commande;
     private $dba;
 
     public function __construct()
@@ -317,6 +329,11 @@ class Facture
         return $this->moyenPaiement;
     }
 
+    public function getCommande()
+    {
+        return $this->commande;
+    }
+
     public function setId($id)
     {
         $this->id = $id;
@@ -342,14 +359,20 @@ class Facture
         $this->moyenPaiement = $moyenPaiement;
     }
 
+    public function setCommande($commande)
+    {
+        $this->commande = $commande;
+    }
+
     public function save()
     {
         $dba = new Dbaccess();
-        $dba->query("insert into facture values('" . $this->id . "',
+        $dba->query("insert into facture (date, statut, montant_total, moyen_paiement, id_commande) values (
                                                 '" . $this->date . "',
-                                                "  . $this->statut . ",
+                                                '"  . $this->statut . "',
                                                 "  . $this->montantTotal . ",
-                                                '"  . $this->moyenPaiement . "')");
+                                                '"  . $this->moyenPaiement . "',
+                                                "  . $this->commande . ")");
         $dba->execute();
         return 0;
     }
@@ -377,7 +400,7 @@ class Facture
     public function getAll()
     {
         $dba = new Dbaccess();
-        $dba->query("Select * from facture");
+        $dba->query("Select *, f.id as id_facture, cl.id as id_client, c.id as id_commande, f.statut as statut_facture, c.date as date_commande from facture f inner join commande c on(f.id_commande = c.id) inner join client cl on(c.id_client = cl.id)");
         return $dba->resultSet();
     }
 
