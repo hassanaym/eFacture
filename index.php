@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (isset($_SESSION['iduser'])) {
+    header('location: home.php');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +12,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/main.css">
+
     <title>eFacture</title>
 </head>
 
@@ -16,23 +25,35 @@
                     <img src="./images/auth-image.png" class="img-fluid" alt="Sample image">
                 </div>
                 <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                    <form>
+                    <form method="post" action="auth.php">
                         <!-- Email input -->
                         <div data-mdb-input-init class="form-outline mb-4">
-                            <input type="email" id="form3Example3" class="form-control form-control-lg" placeholder="Enter a valid email address" />
+                            <input type="text" id="username" name="username" class="form-control form-control-lg" placeholder="Entrer votre nom d'utilisateur" value="<?php if (isset($_COOKIE['username'])) echo $_COOKIE['username']; ?>" />
                             <label class="form-label" for="form3Example3">Username</label>
                         </div>
 
                         <!-- Password input -->
                         <div data-mdb-input-init class="form-outline mb-3">
-                            <input type="password" id="form3Example4" class="form-control form-control-lg" placeholder="Enter password" />
+                            <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Entrer le mot de passe" value="<?php if (isset($_COOKIE['password'])) echo $_COOKIE['password']; ?>" />
                             <label class="form-label" for="form3Example4">Mot de passe</label>
+                        </div>
+
+                        <div class="erreur">
+                            <?php
+                            if (isset($_GET['err'])) {
+                                if ($_GET['err'] == 1) {
+                                    echo "Veuillez saisir un login correct.";
+                                } else {
+                                    echo "Le mot de passe ne correspond pas au login saisi.";
+                                }
+                            }
+                            ?>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
                             <div class="form-check mb-0">
-                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                                <input class="form-check-input me-2" type="checkbox" id="form2Example3" value="1" checked name="rememberMe" />
                                 <label class="form-check-label" for="form2Example3">
                                     Remember me
                                 </label>
@@ -41,8 +62,7 @@
                         </div>
 
                         <div class="text-center text-lg-start mt-4 pt-2">
-                            <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!" class="link-danger">Register</a></p>
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                         </div>
 
                     </form>

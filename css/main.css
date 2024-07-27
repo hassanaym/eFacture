@@ -1,0 +1,29 @@
+.nav-link,
+navbar-brand {
+  color: white !important;
+}
+
+.erreur {
+  animation: welcomeAnim 3000ms;
+  color: var(--main-alert-color);
+  font-weight: 300;
+  font-size: 80%;
+}
+
+/*Welcome animation start*/
+@keyframes welcomeAnim {
+  from {
+    transform: translateX(-50%);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 50;
+    transform: translateX(0%);
+  }
+
+  to {
+    transform: translateX(0%);
+    opacity: 100;
+  }
+}

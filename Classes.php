@@ -400,7 +400,7 @@ class Facture
     public function getAll()
     {
         $dba = new Dbaccess();
-        $dba->query("Select *, f.id as id_facture, cl.id as id_client, c.id as id_commande, f.statut as statut_facture, c.date as date_commande from facture f inner join commande c on(f.id_commande = c.id) inner join client cl on(c.id_client = cl.id)");
+        $dba->query("Select *,f.date as date_facture, f.id as id_facture, cl.id as id_client, c.id as id_commande, f.statut as statut_facture, c.date as date_commande from facture f inner join commande c on(f.id_commande = c.id) inner join client cl on(c.id_client = cl.id)");
         return $dba->resultSet();
     }
 
@@ -409,6 +409,13 @@ class Facture
         $dba = new Dbaccess();
         $dba->query("Select * from facture where id='" . $this->id . "'");
         return $dba->single();
+    }
+
+    public function getByDate($date)
+    {
+        $dba = new Dbaccess();
+        $dba->query("Select *, f.id as id_facture, cl.id as id_client, c.id as id_commande, f.statut as statut_facture, c.date as date_commande from facture f inner join commande c on(f.id_commande = c.id) inner join client cl on(c.id_client = cl.id) where f.date = '" . $date . "'");
+        return $dba->resultSet();
     }
 
 
